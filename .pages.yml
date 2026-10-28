@@ -1,0 +1,43 @@
+media:
+  input: .
+  output: /
+  categories: [image]
+  rename: safe
+
+content:
+  - name: sports-galleries
+    label: Sports photo galleries
+    type: file
+    path: galleries.json
+    format: json
+    operations:
+      delete: false
+    fields:
+      - name: baseball
+        label: Baseball photographs
+        type: image
+        options:
+          multiple:
+            max: 150
+          unique: true
+      - name: football
+        label: Football photographs
+        type: image
+        options:
+          multiple:
+            max: 150
+          unique: true
+      - name: running
+        label: Running and Events photographs
+        type: image
+        options:
+          multiple:
+            max: 150
+          unique: true
+      - name: soccer
+        label: Soccer photographs
+        type: image
+        options:
+          multiple:
+            max: 150
+          unique: true
