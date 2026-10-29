@@ -328,5 +328,50 @@ $('#year').textContent = new Date().getFullYear();
 
 </script>
 <div aria-label="Full-size photograph" class="portfolio-lightbox" id="portfolio-lightbox" role="dialog"><button aria-label="Close image" type="button">×</button><img alt="Expanded sports photograph"/></div>
+<script>
+fetch('galleries.json', {cache:'no-store'})
+  .then(r => {
+    if (!r.ok) throw new Error('Gallery unavailable');
+    return r.json();
+  })
+  .then(data => {
+    const sports = {
+      baseball: ['portfolio-0', 'Baseball'],
+      football: ['portfolio-1', 'Football'],
+      running: ['portfolio-2', 'Running & Events'],
+      soccer: ['portfolio-4', 'Soccer']
+    };
+    Object.entries(sports).forEach(([sport, [id, title]]) => {
+      const photos = data[sport];
+      const container = document.querySelector('#' + id + ' .portfolio-photos');
+      if (!container || !Array.isArray(photos)) return;
+      container.replaceChildren();
+      photos.forEach((path, i) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('aria-label', 'View ' + title + ' photograph ' + (i + 1));
+        const img = document.createElement('img');
+        img.src = path;
+        img.alt = title + ' photograph ' + (i + 1);
+        img.loading = 'lazy';
+        button.appendChild(img);
+        button.addEventListener('click', () => {
+          const lightbox = document.getElementById('portfolio-lightbox');
+          if (!lightbox) return;
+          lightbox.querySelector('img').src = path;
+          lightbox.classList.add('open');
+        });
+        container.appendChild(button);
+      });
+      const highlight = [...document.querySelectorAll('.sport-card')]
+        .find(card => card.dataset.sport === title);
+      if (highlight && photos.length) {
+        highlight.dataset.image = photos[0];
+        highlight.querySelector('img').src = photos[0];
+      }
+    });
+  })
+  .catch(error => console.warn('Keeping original galleries:', error));
+</script>
 </body>
 </html>
